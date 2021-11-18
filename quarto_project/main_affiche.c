@@ -18,166 +18,99 @@ piece choose_piece(int nb_tours)
 {
 	
 	if (nb_tours % 2 == 0)
-		{
-			printf("joueur 1 choisiser une piece:");
-		}
-		else
-		{
-			printf("joueur 2 choisiser une piece:");
-			
-		}
+	{
+		printf("joueur 1 choisiser une piece:");
+	}
+	else
+	{
+		printf("joueur 2 choisiser une piece:");	
+	}
 		
-		scanf("%u", &piece_taille);
-		scanf("%u", &piece_forme);
-		scanf("%u", &piece_couleur);
-		scanf("%u", &piece_interieur);
+	
+	scanf("%u", &piece_taille);
+	scanf("%u", &piece_forme);
+	scanf("%u", &piece_couleur);
+	scanf("%u", &piece_interieur);
+	
 		
-		return get_piece_from_characteristics(piece_taille, piece_forme, piece_couleur, piece_interieur);
+	return get_piece_from_characteristics(piece_taille, piece_forme, piece_couleur, piece_interieur);
 		
 }
  
  void affiche_game(board game)
  {
-	 for (int i = 0; i < 4; i++)
-		{
-			for (int y = 0; y < 4; y++)
-			{
-				if (is_occupied(game, i, y) == true)
-				{
-					piece p1 = get_piece(game, i, y);
-					
-					if (piece_size(p1) == TALL)
-					{
-						if (piece_shape(p1) == SQUARE)
-						{
-							if (piece_color(p1) == RED)
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("① ");
-						
-								}
-								else
-								{
-									printf("② ");
-								}
-						
-							}
-							else
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("③ ");
-						
-								}
-								else
-								{
-									printf("④ ");
-								}
-							}
-						}
-						else
-						{
-							if (piece_color(p1) == RED)
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("⑤ ");
-						
-								}
-								else
-								{
-									printf("⑥ ");
-								}
-						
-							}
-							else
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("⑦ ");
-						
-								}
-								else
-								{
-									printf("⑧ ");
-								}
-							}
-						}
-					}
-					else
-					{
-						if (piece_shape(p1) == SQUARE)
-						{
-							if (piece_color(p1) == RED)
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("⑨ ");
-						
-								}
-								else
-								{
-									printf("⑩ ");
-								}
-						
-							}
-							else
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("⑪ ");
-						
-								}
-								else
-								{
-									printf("⑫ ");
-								}
-							}
-						}
-						else
-						{
-							if (piece_color(p1) == RED)
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("⑬ ");
-						
-								}
-								else
-								{
-									printf("⑭ ");
-								}
-						
-							}
-							else
-							{
-								if (piece_top(p1) == SOLID)
-								{
-									printf("⑮ ");
-						
-								}
-								else
-								{
-									printf("⑯ ");
-								}
-							}
-						}
-						
-					}
-				}
-				else
-				{
-					printf("Ⓞ ");
-				}
-			}
-			printf("\n\n");
-		}
+	 
+	 // creation d'un tableau permettant affichage
+	 
+	 int tab[11][11] = {0};
+	 
+	 // remplissage du tableau, 0 == aucun element
+	 // 1 == premiere characteristique , 2 == seconde characteristique
+	 
+	 for (int i = 0; i < 11; i+=3)
+	 {
+		 
+		 for (int y = 0; y < 11; y+=3)
+		 {
+			 if (is_occupied(game, i/3, y/3))
+			 {
+				 piece p1 = get_piece(game, i/3, y/3);
+				 
+				 tab[i]    [y]      = (piece_size(p1)) + 1;
+				 tab[i]    [y + 1]  = (piece_shape(p1)) + 1;
+				 tab[i + 1][y]      = (piece_color(p1)) + 1;
+				 tab[i + 1][y + 1]  = (piece_top(p1)) + 1;
+			 }
+		 }
+	 }
+	 
+	 
+	 // affichage du tableau 
+	 for (int i = 0; i < 11; i++)
+	 {
+		 for (int y = 0; y < 11; y++)
+		 {
+			 
+			 if (i % 3 == 2)
+			 {
+				 printf("-");
+			 }
+			 else
+			 {
+				 if (y % 3 == 2)
+				 {
+					 printf("|");
+				 }
+				 else 
+				 {
+					 if (tab[i][y] == 0)
+					 {
+						 printf("x");
+					 }
+					 else
+					 {
+						 if (tab[i][y] - 1 > 0)
+						 {
+							 printf("1");
+						 }
+						 else
+						 {
+							 printf("0"); 
+						 }
+					 }
+				 }
+			 }
+			 
+		
+			 
+		 }
+		 printf("\n");
+	 }
  }
  
  void is_winner(int nb_tours)
  {
-	 if(nb_tours%2==0)
+	if(nb_tours%2==0)
 	{
 		printf("le joueur 2 a gagné\n");
 	}
