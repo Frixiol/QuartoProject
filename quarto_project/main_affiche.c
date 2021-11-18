@@ -14,6 +14,9 @@ enum top piece_interieur;
 int piece_x;
 int piece_y;
  
+ 
+// fonction permettant de demander aux joueur de choisir une pièce 
+// en fonction de c'est characteristique, 0 ou 1
 piece choose_piece(int nb_tours)
 {
 	
@@ -37,107 +40,9 @@ piece choose_piece(int nb_tours)
 		
 }
  
- void affiche_game(board game)
- {
-	 
-	 // creation d'un tableau permettant affichage
-	 
-	 int tab[11][11] = {0};
-	 
-	 // remplissage du tableau, 0 == aucun element
-	 // 1 == premiere characteristique , 2 == seconde characteristique
-	 
-	 for (int i = 0; i < 11; i+=3)
-	 {
-		 
-		 for (int y = 0; y < 11; y+=3)
-		 {
-			 if (is_occupied(game, i/3, y/3))
-			 {
-				 piece p1 = get_piece(game, i/3, y/3);
-				 
-				 tab[i]    [y]      = (piece_size(p1)) + 1;
-				 tab[i]    [y + 1]  = (piece_shape(p1)) + 1;
-				 tab[i + 1][y]      = (piece_color(p1)) + 1;
-				 tab[i + 1][y + 1]  = (piece_top(p1)) + 1;
-			 }
-		 }
-	 }
-	 
-	 
-	 // affichage du tableau 
-	 for (int i = 0; i < 11; i++)
-	 {
-		 for (int y = 0; y < 11; y++)
-		 {
-			 
-			 if (i % 3 == 2)
-			 {
-				 printf("-");
-			 }
-			 else
-			 {
-				 if (y % 3 == 2)
-				 {
-					 printf("|");
-				 }
-				 else 
-				 {
-					 if (tab[i][y] == 0)
-					 {
-						 printf("x");
-					 }
-					 else
-					 {
-						 if (tab[i][y] - 1 > 0)
-						 {
-							 printf("1");
-						 }
-						 else
-						 {
-							 printf("0"); 
-						 }
-					 }
-				 }
-			 }
-			 
-		
-			 
-		 }
-		 printf("\n");
-	 }
- }
- 
- void is_winner(int nb_tours)
- {
-	if(nb_tours%2==0)
-	{
-		printf("le joueur 2 a gagné\n");
-	}
-	else
-	{
-		printf("le joueur 1 a gagné\n");
-	}
- }
- 
- 
-int main(int args, char **argv){
-	board game = new_game();
-	printf("Un plateau est créé.\n");
-	
-	int nb_tours = 0;
-	
-	
-	
-	while (has_winner(game) == false)
-	{
-		nb_tours++;
-	
-	
-		
-		piece p = choose_piece(nb_tours);
-		
-		if (nb_tours % 2 == 0)
+void choose_emplacement(int nb_tours)
+{
+	if (nb_tours % 2 == 0)
 		{
 			printf("joueur 2 choisiser l'emplacement:");
 		}
@@ -148,6 +53,113 @@ int main(int args, char **argv){
 		
 		scanf("%d", &piece_x);
 		scanf("%d", &piece_y);
+}
+
+
+
+// fonction permettant l'affichage des pieces dans le terminal
+void affiche_game(board game)
+{
+	 
+	// creation d'un tableau permettant affichage
+	 
+	int tab[11][11] = {0};
+	 
+	// remplissage du tableau, 0 == aucun element
+	// 1 == premiere characteristique , 2 == seconde characteristique
+	 
+	for (int i = 0; i < 11; i+=3)
+	{
+		 
+		for (int y = 0; y < 11; y+=3)
+		{
+			if (is_occupied(game, i/3, y/3))
+			{
+				piece p1 = get_piece(game, i/3, y/3);
+				 
+				tab[i]    [y]      = (piece_size(p1)) + 1;
+				tab[i]    [y + 1]  = (piece_shape(p1)) + 1;
+				tab[i + 1][y]      = (piece_color(p1)) + 1;
+				tab[i + 1][y + 1]  = (piece_top(p1)) + 1;
+			}
+		}
+	}
+	 
+	 
+	// affichage du tableau 
+	for (int i = 0; i < 11; i++)
+	{
+		for (int y = 0; y < 11; y++)
+		{
+			 
+			if (i % 3 == 2)
+			{
+				printf("-");
+			}
+			else
+			{
+				if (y % 3 == 2)
+				{
+					printf("|");
+				}
+				else 
+				{
+					if (tab[i][y] == 0)
+					{
+						printf("x");
+					}
+					else
+					{
+						if (tab[i][y] - 1 > 0)
+						{
+							printf("1");
+						}
+						else
+						{
+							printf("0"); 
+						}
+					}
+				}
+			}	 
+		}
+		printf("\n");
+	}
+}
+ 
+ 
+// fonctions permettant l'affichage du gagnant de la partie 
+void is_winner(int nb_tours)
+{
+	if(nb_tours%2==0)
+	{
+		printf("le joueur 2 a gagné\n");
+	}
+	else
+	{
+		printf("le joueur 1 a gagné\n");
+	}
+}
+ 
+ 
+int main(int args, char **argv){
+	
+	// creation d'un nouveau plateau
+	board game = new_game();
+	printf("Un plateau est créé.\n");
+	
+	// variable permettant de connaitre qu'elle joueur joue
+	int nb_tours = 0;
+	
+	// boucle principal du jeu
+	while (has_winner(game) == false)
+	{
+		
+		nb_tours++;
+	
+		// creation d'une variable de type piece crée par un joueur 
+		piece p = choose_piece(nb_tours);
+		
+		choose_emplacement(nb_tours);
 		
 		enum return_code res = place_piece(game, piece_x, piece_y, p);
 		if(res == SUCCESS){
@@ -164,6 +176,7 @@ int main(int args, char **argv){
 		
 	}
 	
+	// affichage du gagnant de la partie en fonction de qui à jouer en dernier 
 	is_winner(nb_tours);
 	
 	destroy_game(game);
