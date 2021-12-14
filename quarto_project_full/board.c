@@ -423,12 +423,11 @@ void ask_choose_emplacement(save game_save, piece a_piece)
 }
 
 // demande a l'utilisateur un nom
-save ask_name(save game_save, int joueur)
+void ask_name(save game_save, int joueur)
 {
 	char name[10];
 	scanf("%s", name);
 	strcpy(game_save->joueur_name[joueur], name);
-	return game_save;
 }
 
 int ask_number_between(int low_value, int high_value, int number)
@@ -498,7 +497,8 @@ void affichage_menu()
 	printf("Bienvenue sur Quarto project\n\n");
 	printf("1: Lancer une partie\n");
 	printf("2: Charger une partie\n");
-	printf("3: Regarder le Hall of Fame\n\n");
+	printf("3: Regarder le Hall of Fame\n");
+	printf("4: Quitter le jeu\n\n");
 }
 
 void print_symbol(int a_piece)
@@ -622,6 +622,7 @@ void affiche_game(board game)
 	affichage_titre();
 	
 	
+	
 	// affichage du jeu
 	for (int i = 0; i < 16; i++)
 	{
@@ -649,4 +650,128 @@ void affiche_game(board game)
 		printf("\n");
 	}
 	printf("\n");
+}
+
+
+bool is_same_name(FILE *ft , FILE* tmp, int *ch, char const *p_name)
+{
+	
+	char name_tab[10];
+	
+	int i = 0;
+	printf("wtf1\n");
+	while (((*ch) = fgetc(ft)) != ':')
+	{
+		name_tab[i] = (*ch);
+		fputc((*ch), tmp);
+		i++;
+	}
+	fputc((*ch), tmp);
+	name_tab[i] = '\0';
+	
+	printf("wtf2\n");
+	printf("%c\n", name_tab[0]);
+	printf("%c\n", name_tab[1]);
+	printf("%c\n", name_tab[2]);
+	printf("%c\n", name_tab[3]);
+	printf("%c\n", name_tab[4]);
+	printf("%c\n", name_tab[5]);
+	
+	if ((strcmp(p_name, name_tab) == 0))
+	{
+		return true;
+	}
+	return false;
+	
+}
+
+
+
+void hall_read()
+{
+	
+	FILE *ft;
+	char const *f_name = "hall_of_fame.txt";
+	int ch;
+	ft = fopen(f_name, "r");
+	if (ft == NULL)
+    {
+        fprintf(stderr, "erreur ficher: %s ne s'ouvre pas\n", f_name);
+        exit(1);
+    }
+	while ((ch = fgetc(ft)) != EOF)
+    {
+        printf("%c", ch);
+    }
+    
+	free(ft);
+}
+
+void hall_write(char const *p_name)
+{
+	
+	FILE *ft;
+	char const *f_name = "hall_of_fame.txt";
+	ft = fopen(f_name, "a+");
+	int ch;
+	
+	printf("wtf1\n");
+	
+	if (ft == NULL)
+    {
+        fprintf(stderr, "erreur ficher: %s ne s'ouvre pas\n", f_name);
+        exit(1);
+    }
+    
+    FILE* tmp = tmpfile();
+    if (tmp == NULL)
+    {
+        fprintf(stderr, "erreur ficher temporaire ne s'ouvre pas\n");
+        exit(1);
+    }
+    
+    for (int i = 0; i < 146; i++) 
+    {
+		ch = fgetc(ft);
+		fputc(ch, tmp);
+	}
+	
+	printf("wtf2\n");
+	
+	while ((ch = fgetc(ft)) != EOF)
+	{
+		printf("wtf3\n");
+		fseek(ft, -1L, SEEK_CUR);
+		printf("wtf4\n");
+		if (is_same_name(ft, tmp, &ch, p_name))
+		{
+			printf("wtf5\n");
+			ch = fgetc(ft);
+			printf("1:%c\n", ch);
+			fputc(ch, tmp);
+			ch = fgetc(ft);
+			printf("2:%c\n", ch);
+			fputc(ch++, tmp);
+		}
+		else
+		{
+			while ((ch = fgetc(ft)) != '\n' && ch != '\0')
+			{
+				printf("3:%c\n", ch);
+				fputc(ch, tmp);
+			}
+			fputc(ch, tmp);
+		}
+	}
+	
+	printf("wtf3\n");
+	
+	fclose(ft);
+	ft = fopen(f_name, "w");
+	rewind(tmp);
+	while( ( ch = fgetc(tmp) ) != EOF )
+	fputc(ch, ft);
+	
+	fclose(tmp);
+	fclose(ft);
 }

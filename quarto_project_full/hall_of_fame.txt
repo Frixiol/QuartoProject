@@ -1,0 +1,8 @@
+
+----------------------------------------
+              HALL OF FAME
+----------------------------------------
+nombre de partie gagnee par joueur
+
+alan: 1 victoire
+melo: 1 victoire

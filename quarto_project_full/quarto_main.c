@@ -10,7 +10,8 @@
 enum state { 
 	MENU,
 	GAME,
-	HALL
+	HALL,
+	QUIT
 };
 
 enum state launcher;
@@ -22,11 +23,11 @@ void menu()
 {
 	int menu_choice = 0;
 	
-	system("clear");
+	
 	
 	affichage_menu();
 	
-	menu_choice = ask_number_between(1, 3, menu_choice);
+	menu_choice = ask_number_between(1, 4, menu_choice);
 	
 	
 	if (menu_choice == 1)
@@ -34,14 +35,21 @@ void menu()
 		launcher = GAME;
 		game_save = new_save();
 	}
+	
 	if (menu_choice == 2)
 	{
 		launcher = MENU;
 		//save game_save = load_save();
 	}
+	
 	if (menu_choice == 3)
 	{
 		launcher = HALL;
+	}
+	
+	if (menu_choice == 4)
+	{
+		launcher = QUIT;
 	}
 	
 }
@@ -56,10 +64,10 @@ void game()
 	game_save->game = new_game();
 	
 	printf("choisiser un nom pour joueur 1:");
-	game_save = ask_name(game_save, 0);
+	ask_name(game_save, 0);
 	
 	printf("choisiser un nom pour joueur 2:");
-	game_save = ask_name(game_save, 1);
+	ask_name(game_save, 1);
 	
 	system("clear");
 	affiche_game(game_save->game);
@@ -69,7 +77,7 @@ void game()
 		
 		piece a_piece = ask_choose_piece(game_save);
 		
-		game_save->joueur_tour += 1 % 2;
+		game_save->joueur_tour = (game_save->joueur_tour + 1) % 2;
 		
 		ask_choose_emplacement(game_save, a_piece);
 	
@@ -82,6 +90,7 @@ void game()
 	// affichage du gagnant de la partie en fonction de qui à jouer en dernier
 	printf("le joueur %d a gagné\n", game_save->joueur_tour);
 
+	hall_write(game_save->joueur_name[game_save->joueur_tour]);
 	
 	destroy_game(game_save->game);
 	destroy_save(game_save);
@@ -94,7 +103,16 @@ void game()
 
 void hall_of_fame()
 {
-	affichage_menu();
+	system("clear");
+	affichage_titre();
+	
+	hall_read();
+    
+    // moyen de quitter le hall a CHANGER !!!
+    int a;
+	printf("entrer un nombre pour quitter:");
+	scanf("%d", &a);
+	
 	launcher = MENU;
 }
 
@@ -111,6 +129,8 @@ int main(int argc, char **argv)
 		else if (launcher == GAME) game();
 		
 		else if (launcher == HALL) hall_of_fame();
+		
+		else if (launcher == QUIT) run = false;
 	}
 	return 0;
 }

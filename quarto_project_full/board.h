@@ -79,7 +79,7 @@ piece ask_choose_piece(save game_save);
 void ask_choose_emplacement(save game_save, piece a_piece);
 
 
-save ask_name(save game_save, int joueur);
+void ask_name(save game_save, int joueur);
 
 
 int ask_number_between(int low_value, int high_value, int number);
@@ -94,5 +94,10 @@ void affichage_titre();
 
 void affiche_game(board game);
 
+
+
+void hall_read();
+
+void hall_write(char const *p_name);
 
 #endif /*_BOARD_H_*/
