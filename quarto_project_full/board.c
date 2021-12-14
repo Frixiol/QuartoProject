@@ -364,12 +364,20 @@ piece ask_choose_piece(save game_save)
 	{
 	
 		// permet de n'ecrire que 4 int
-		scanf("%1d%1d%1d%1d", &a, &b, &c, &d);
+		scanf("%1d", &a);
+		
+		if (a == 9)
+		{
+			return NULL;
+		}
+		
+		scanf("%1d%1d%1d", &b, &c, &d);
 		
 		while (!((a == 0 || a == 1) && (b == 0 || b == 1) && (c == 0 || c == 1) && (d == 0 || d == 1)))
 		{
 			printf("\nveuiller reesayer avec les bonne valeur\n");
 			printf("veuiller entrer 4 nombre de 0 ou 1:");
+			// nettoye le buffer si l'utilisateur a trop ecris
 			while ((getchar()) != '\n');
 			
 			scanf("%1d%1d%1d%1d", &a, &b, &c, &d);
@@ -398,20 +406,25 @@ void ask_choose_emplacement(save game_save, piece a_piece)
 	printf("%s choisiser un emplacement", game_save->joueur_name[game_save->joueur_tour]);
 	printf("\nveuiller entrer 2 nombre de 1 a 4:");
 	
+	// demande de choisir un emplacement tant que l'emplacement n'est pas correct
 	while (valid != SUCCESS)
 	{
 		scanf("%1d%1d", &a, &b);
 		
+		// si les valeur ne sont pas dans la zone demander alors redemende
 		while (!((a >= 1 && a <= 4) && (b >= 1 && b <= 4)))
 		{
 			printf("\nveuiller reesayer avec les bonne valeur\n");
 			printf("veuiller entrer 2 nombre de 1 a 4:");
+			// nettoye le buffer si l'utilisateur a trop ecris
 			while ((getchar()) != '\n');
 			
 			scanf("%1d%1d", &a, &b);
 		}
 
-		// debuging
+		// SUCCESS:  la pose c'est bien effectuer
+		// POSITION: l'emplacement choisie a déja été pris
+		// PIECE: piece deja pris mais normalement pas possible
 		valid = place_piece(game_save->game, a-1, b-1, a_piece);
 		
 		if (valid != SUCCESS)
@@ -430,6 +443,7 @@ void ask_name(save game_save, int joueur)
 	strcpy(game_save->joueur_name[joueur], name);
 }
 
+// fonction qui demande d'entrer un nombre entre deux valeur donnée
 int ask_number_between(int low_value, int high_value, int number)
 {
 	scanf("%1d", &number);
@@ -451,6 +465,7 @@ void destroy_game(board game)
 	free(game);
 }
 
+// fonction permettent de désallouer la memoire de l'instance de la fonction de save
 void destroy_save(save game_save)
 {
 	free(game_save);
@@ -467,7 +482,7 @@ void destroy_save(save game_save)
  *
 **/
 
-
+// fonction permettent l'affichage du titre du jeu
 void affichage_titre()
 {
 	for (int i = 0; i < 5; i++)
@@ -490,6 +505,7 @@ void affichage_titre()
 	printf("\n");
 }
 
+// fonction qui affiche les choix possible du menu
 void affichage_menu()
 {
 	affichage_titre();
@@ -498,12 +514,13 @@ void affichage_menu()
 	printf("1: Lancer une partie\n");
 	printf("2: Charger une partie\n");
 	printf("3: Regarder le Hall of Fame\n");
-	printf("4: Quitter le jeu\n\n");
+	printf("4: Explication du jeu\n");
+	printf("5: Quitter le jeu\n\n");
 }
 
+// fonction qui permet de print un symbole representent une piece en fonction d'un int donné
 void print_symbol(int a_piece)
 {
-	
 	
 	switch (a_piece)
 	{
@@ -561,9 +578,10 @@ void print_symbol(int a_piece)
 	}													
 }
 
-
+// fonction permettent de print le symbole en fonction de la piece
 void print_symbol_by_piece(piece a_piece)
 {
+	
 	int val;
 	
 	val = a_piece->p_size * 8;
@@ -576,24 +594,29 @@ void print_symbol_by_piece(piece a_piece)
 	
 }
 
-void print_board(board game, int i, int y)
+// fonction peremettent d'afficher le tableau
+void print_board(board game, int ligne, int colonne)
 {
-	if ((y + 1) % 4 == 0)
+	// affiche une barre vertical toute les 4 colonne
+	if ((colonne + 1) % 4 == 0)
 	{
 		printf("|");
 	}
 	else
 	{
-		if ((i + 1) % 4 == 0)
+		// affiche une barre horizontal toute les 4 ligne
+		if ((ligne + 1) % 4 == 0)
 		{
 			printf("-");	
 		}
 		else
 		{
-			if ((i - 1) % 4 == 0 && (y - 1) % 4 == 0 && is_occupied(game, (i - 1) / 4, (y - 1) / 4))
+			// si la position est correct est que la case est occuper alors print la piece
+			if ((ligne - 1) % 4 == 0 && (colonne - 1) % 4 == 0 && is_occupied(game, (ligne - 1) / 4, (colonne - 1) / 4))
 			{
-				print_symbol_by_piece(game->tab[(i - 1) / 4][(y - 1) / 4]);
+				print_symbol_by_piece(game->tab[(ligne - 1) / 4][(colonne - 1) / 4]);
 			}
+			// sinon afiiche rien
 			else
 			{
 				printf(" ");
@@ -602,19 +625,19 @@ void print_board(board game, int i, int y)
 	}
 }
 
-
-void print_all_piece(int i, int y)
+// fonction permettent d'afficher les piece du jeu
+void print_all_piece(int ligne, int colonne)
 {
-	
-	if (y == 31)
+	// si sur la colonne chosis
+	if (colonne == 31)
 	{
-		print_symbol(i);
+		print_symbol(ligne);
 	}
 	
 	
 }
 
-
+// fonction permettent d'afficher le jeu 
 void affiche_game(board game)
 {
 	
@@ -622,23 +645,23 @@ void affiche_game(board game)
 	affichage_titre();
 	
 	
-	
-	// affichage du jeu
-	for (int i = 0; i < 16; i++)
+	// affichage du plateau est des piece restante
+	for (int ligne = 0; ligne < 16; ligne++)
 	{
 		
-		for (int y = 0; y < 40; y++)
+		for (int colonne = 0; colonne < 40; colonne++)
 		{
-			
-			if (y < 15 && i < 15)
+			// affichage du tableau sur la gauche
+			if (colonne < 15 && ligne < 15)
 			{
-				print_board(game, i, y);
+				print_board(game, ligne, colonne);
 			}
 			else 
 			{
-				if (y > 19)
+				// affiche d'est piece sur la droite
+				if (colonne > 19)
 				{
-					print_all_piece(i, y);
+					print_all_piece(ligne, colonne);
 				}
 				else
 				{
@@ -653,125 +676,133 @@ void affiche_game(board game)
 }
 
 
-bool is_same_name(FILE *ft , FILE* tmp, int *ch, char const *p_name)
+void serialise_save(save game_save)
 {
 	
-	char name_tab[10];
-	
-	int i = 0;
-	printf("wtf1\n");
-	while (((*ch) = fgetc(ft)) != ':')
-	{
-		name_tab[i] = (*ch);
-		fputc((*ch), tmp);
-		i++;
-	}
-	fputc((*ch), tmp);
-	name_tab[i] = '\0';
-	
-	printf("wtf2\n");
-	printf("%c\n", name_tab[0]);
-	printf("%c\n", name_tab[1]);
-	printf("%c\n", name_tab[2]);
-	printf("%c\n", name_tab[3]);
-	printf("%c\n", name_tab[4]);
-	printf("%c\n", name_tab[5]);
-	
-	if ((strcmp(p_name, name_tab) == 0))
-	{
-		return true;
-	}
-	return false;
-	
-}
-
-
-
-void hall_read()
-{
-	
+	// ouverture du fichier hall en mode lecture
 	FILE *ft;
-	char const *f_name = "hall_of_fame.txt";
 	int ch;
-	ft = fopen(f_name, "r");
+	ft = fopen("save.txt", "w");
+	
+	// si le fichier est null affiche une erreur
 	if (ft == NULL)
-    {
-        fprintf(stderr, "erreur ficher: %s ne s'ouvre pas\n", f_name);
-        exit(1);
-    }
-	while ((ch = fgetc(ft)) != EOF)
-    {
-        printf("%c", ch);
-    }
-    
-	free(ft);
-}
-
-void hall_write(char const *p_name)
-{
-	
-	FILE *ft;
-	char const *f_name = "hall_of_fame.txt";
-	ft = fopen(f_name, "a+");
-	int ch;
-	
-	printf("wtf1\n");
-	
-	if (ft == NULL)
-    {
-        fprintf(stderr, "erreur ficher: %s ne s'ouvre pas\n", f_name);
-        exit(1);
-    }
-    
-    FILE* tmp = tmpfile();
-    if (tmp == NULL)
-    {
-        fprintf(stderr, "erreur ficher temporaire ne s'ouvre pas\n");
-        exit(1);
-    }
-    
-    for (int i = 0; i < 146; i++) 
-    {
-		ch = fgetc(ft);
-		fputc(ch, tmp);
+	{
+		fprintf(stderr, "erreur ficher:  ne s'ouvre pas\n");
+		exit(1);
 	}
 	
-	printf("wtf2\n");
-	
-	while ((ch = fgetc(ft)) != EOF)
+	// remplis le fichier avec les donnée du plateau de jeu
+	for (int i = 0; i < DIMENSION; i++)
 	{
-		printf("wtf3\n");
-		fseek(ft, -1L, SEEK_CUR);
-		printf("wtf4\n");
-		if (is_same_name(ft, tmp, &ch, p_name))
+		for (int y = 0; y < DIMENSION; y++)
 		{
-			printf("wtf5\n");
-			ch = fgetc(ft);
-			printf("1:%c\n", ch);
-			fputc(ch, tmp);
-			ch = fgetc(ft);
-			printf("2:%c\n", ch);
-			fputc(ch++, tmp);
-		}
-		else
-		{
-			while ((ch = fgetc(ft)) != '\n' && ch != '\0')
+			
+			piece a_piece = game_save->game->tab[i][y];
+			 
+			if (a_piece != NULL)
 			{
-				printf("3:%c\n", ch);
-				fputc(ch, tmp);
+		    	ch = a_piece->p_size;
+				fputc(ch + '0', ft);
+				ch = a_piece->p_shape;
+				fputc(ch + '0', ft);
+				ch = a_piece->p_color;
+				fputc(ch + '0', ft);
+				ch = a_piece->p_top;
+				fputc(ch + '0', ft);
 			}
-			fputc(ch, tmp);
+			
+			fputc('\n', ft);
+			 
+		}
+	}
+	
+	// ecris le tour de jeu
+	fprintf(ft, "%d\n", game_save->joueur_tour);
+	
+	// ecris le nom des joueurs
+	fprintf(ft, "%s\n", game_save->joueur_name[0]);
+	fprintf(ft, "%s\n", game_save->joueur_name[1]);
+	
+	fclose(ft);
+
+}
+
+
+void load_save(save game_save)
+{
+	
+	// ouverture du fichier hall en mode lecture
+	FILE *ft;
+	int ch;
+	ft = fopen("save.txt", "r");
+	
+	printf("wtf1\n");
+	
+	// si le fichier est null affiche une erreur
+	if (ft == NULL)
+	{
+		fprintf(stderr, "erreur ficher: ne s'ouvre pas\n");
+		exit(1);
+	}
+	
+	for (int i = 0; i < DIMENSION; i++)
+	{
+		for (int y = 0; y < DIMENSION; y++)
+		{
+			printf("wtf2\n");
+			ch = fgetc(ft);
+			printf("%c, %d, %d\n", ch, i, y);
+			if (ch == '0' || ch == '1')
+			{	
+				fseek(ft, -1, SEEK_CUR);	
+				
+				piece a_piece;
+				
+				a_piece = malloc(sizeof(struct piece_t));
+				
+				
+				ch = fgetc(ft);
+				a_piece->p_size = ch - '0';
+				ch = fgetc(ft);
+				a_piece->p_shape = ch - '0';
+				ch = fgetc(ft);
+				a_piece->p_color = ch - '0';
+				ch = fgetc(ft);
+				a_piece->p_top = ch - '0';
+				
+				fseek(ft, 1, SEEK_CUR);
+				
+				game_save->game->tab[i][y] = a_piece;
+			}
 		}
 	}
 	
 	printf("wtf3\n");
+	ch = fgetc(ft);
+	game_save->joueur_tour = ch - '0';
+	fseek(ft, 1, SEEK_CUR);	
 	
-	fclose(ft);
-	ft = fopen(f_name, "w");
-	rewind(tmp);
-	while( ( ch = fgetc(tmp) ) != EOF )
-	fputc(ch, ft);
+	int i = 0;
+	while ((ch = fgetc(ft)) != '\n')
+	{ 
+		game_save->joueur_name[0][i] = ch;
+		i++;
+	}
+	game_save->joueur_name[0][i] = '\0';
 	
-	fclose(tmp);
+	i = 0;
+	while ((ch = fgetc(ft)) != '\n')
+	{ 
+		game_save->joueur_name[1][i] = ch;
+		i++;
+	}
+	game_save->joueur_name[1][i] = '\0';
+
 	fclose(ft);
+
 }
+
+
+
+
+

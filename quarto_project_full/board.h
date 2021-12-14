@@ -96,8 +96,10 @@ void affiche_game(board game);
 
 
 
-void hall_read();
 
-void hall_write(char const *p_name);
+
+void serialise_save(save game_save);
+
+void load_save(save game_save);
 
 #endif /*_BOARD_H_*/
