@@ -7,9 +7,8 @@ Campus 3 de l'IUT Grand Ouest Normandie
 
 
 
-
 !! avant d'entrer les commande veuiller vous placer  !!
-!! dans le repertoire du jeu: /quarto_project$       !!
+!! dans le repertoire du jeu: /quarto_direct$       !!
 
 Commande pour lancer le jeu:
 ./quarto_main.o 
