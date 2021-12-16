@@ -1,0 +1,8 @@
+
+----------------------------------------
+              HALL OF FAME
+----------------------------------------
+nombre de partie gagnee par joueur
+
+b: 1 victoire
+
