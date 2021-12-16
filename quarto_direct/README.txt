@@ -11,9 +11,5 @@ Campus 3 de l'IUT Grand Ouest Normandie
 !! avant d'entrer les commande veuiller vous placer  !!
 !! dans le repertoire du jeu: /quarto_project$       !!
 
-Commande de compilation a effectuer si "main_affiche.o" n'existe pas:
-gcc -Wall quarto_main.c board.c -o quarto_main.o
-
 Commande pour lancer le jeu:
 ./quarto_main.o 
-
