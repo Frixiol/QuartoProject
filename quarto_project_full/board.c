@@ -173,22 +173,30 @@ bool piece_min_one_chara(piece piece_a, piece piece_b, piece piece_c, piece piec
 	if (piece_is_null(piece_a) || piece_is_null(piece_b) || piece_is_null(piece_c) || piece_is_null(piece_d)) return false;
 	
 	// compare si chaque piece on l'a meme characteristique size
-	if ((piece_size(piece_a) == piece_size(piece_b)) == (piece_size(piece_c) == piece_size(piece_d)))
+	if ((piece_size(piece_a) == piece_size(piece_b)) && (piece_size(piece_a) && piece_size(piece_c)) &&
+		(piece_size(piece_a) == piece_size(piece_d)) && (piece_size(piece_b) && piece_size(piece_c)) &&
+		(piece_size(piece_b) == piece_size(piece_b)) && (piece_size(piece_c) && piece_size(piece_d)))
 	{
 		return true;
 	}
 	// compare si chaque piece on l'a meme characteristique top
-	if ((piece_top(piece_a) == piece_top(piece_b)) == (piece_top(piece_c) == piece_top(piece_d)))
+	if ((piece_top(piece_a) == piece_top(piece_b)) && (piece_top(piece_a) == piece_top(piece_c)) &&
+		(piece_top(piece_a) == piece_top(piece_d)) && (piece_top(piece_b) == piece_top(piece_c)) &&
+		(piece_top(piece_b) == piece_top(piece_b)) && (piece_top(piece_c) == piece_top(piece_d)))
 	{
 		return true;
 	}
 	// compare si chaque piece on l'a meme characteristique color
-	if ((piece_color(piece_a) == piece_color(piece_b)) == (piece_color(piece_c) == piece_color(piece_d)))
+	if ((piece_color(piece_a) == piece_color(piece_b)) && (piece_color(piece_a) == piece_color(piece_c)) &&
+		(piece_color(piece_a) == piece_color(piece_d)) && (piece_color(piece_b) == piece_color(piece_c)) &&
+		(piece_color(piece_b) == piece_color(piece_b)) && (piece_color(piece_c) == piece_color(piece_d)))
 	{
 		return true;
 	}
 	// compare si chaque piece on l'a meme characteristique shape
-	if ((piece_shape(piece_a) == piece_shape(piece_b)) == (piece_shape(piece_c) == piece_shape(piece_d)))
+	if ((piece_shape(piece_a) == piece_shape(piece_b)) && (piece_shape(piece_a) == piece_shape(piece_c)) &&
+		(piece_shape(piece_a) == piece_shape(piece_d)) && (piece_shape(piece_b) == piece_shape(piece_c)) &&
+		(piece_shape(piece_b) == piece_shape(piece_b)) && (piece_shape(piece_c) == piece_shape(piece_d)))
 	{
 		return true;
 	}
@@ -344,6 +352,13 @@ piece get_piece_from_characteristics(board game, enum size a_size, enum shape a_
 	return a_piece;
 }
 
+
+void clear_buffer()
+{
+	while ((getchar()) != '\n');
+}
+
+
 // fonction permettent de demander a l'utilisateur une piece
 piece ask_choose_piece(save game_save)
 {
@@ -378,10 +393,12 @@ piece ask_choose_piece(save game_save)
 			printf("\nveuiller reesayer avec les bonne valeur\n");
 			printf("veuiller entrer 4 nombre de 0 ou 1:");
 			// nettoye le buffer si l'utilisateur a trop ecris
-			while ((getchar()) != '\n');
+			clear_buffer();
 			
 			scanf("%1d%1d%1d%1d", &a, &b, &c, &d);
 		}
+		
+		clear_buffer();
 		
 		a_piece = get_piece_from_characteristics(game_save->game, a, b, c, d);
 		
@@ -417,10 +434,12 @@ void ask_choose_emplacement(save game_save, piece a_piece)
 			printf("\nveuiller reesayer avec les bonne valeur\n");
 			printf("veuiller entrer 2 nombre de 1 a 4:");
 			// nettoye le buffer si l'utilisateur a trop ecris
-			while ((getchar()) != '\n');
+			clear_buffer();
 			
 			scanf("%1d%1d", &a, &b);
 		}
+		
+		clear_buffer();
 
 		// SUCCESS:  la pose c'est bien effectuer
 		// POSITION: l'emplacement choisie a déja été pris
@@ -441,6 +460,7 @@ void ask_name(save game_save, int joueur)
 	char name[10];
 	scanf("%s", name);
 	strcpy(game_save->joueur_name[joueur], name);
+	clear_buffer();
 }
 
 // fonction qui demande d'entrer un nombre entre deux valeur donnée
@@ -450,14 +470,28 @@ int ask_number_between(int low_value, int high_value, int number)
 	
 	while (!(number >= low_value && number <= high_value))
 	{
-		scanf("%1d", &number);
 		printf("\reesayer avec les bonne valeur\n");
 		printf("veuiller entrer 1 nombre de %d a %d:", low_value, high_value);
-		while ((getchar()) != '\n');
+		scanf("%1d", &number);
+		clear_buffer();
 	}
+	
+	clear_buffer();
 	
 	return number;
 }
+
+int ask_to_quit()
+{
+	int a;
+	printf("entrer une valeur pour quitter:");
+	scanf("%d", &a);
+	clear_buffer();
+	
+	return a;
+}
+
+
 
 // fonction permettent de désallouer la memoire de l'instance de la fonction de board
 void destroy_game(board game)
@@ -625,16 +659,46 @@ void print_board(board game, int ligne, int colonne)
 	}
 }
 
-// fonction permettent d'afficher les piece du jeu
-void print_all_piece(int ligne, int colonne)
+// retourne vrai si la piece donné via base de 10 n'est pas jouée
+int piece_is_free_by_num(board game, int val)
 {
-	// si sur la colonne chosis
-	if (colonne == 31)
+	// get_piece renvoie NULL si la piece a deja été jouée
+	return (get_piece_from_characteristics(game, val / 8, (val % 8) / 4, (val % 4 / 2), val % 2) != NULL);
+}
+
+
+// fonction permettent d'afficher les piece du jeu
+void print_all_piece(board game, int ligne, int colonne)
+{
+	if (piece_is_free_by_num(game, ligne))
 	{
-		print_symbol(ligne);
+		// si sur la colonne chosis
+		switch (colonne)
+		{
+			case 25:
+				printf("%d", ligne / 8);
+				break;
+				
+			case 26:
+				printf("%d", (ligne % 8) / 4);
+				break;
+				
+			case 27:
+				printf("%d", (ligne % 4) / 2);
+				break;
+				
+			case 28:
+				printf("%d", ligne % 2);
+				break;
+				
+			case 30:
+				print_symbol(ligne);
+				break;
+			
+			default:
+				printf(" ");
+		}
 	}
-	
-	
 }
 
 // fonction permettent d'afficher le jeu 
@@ -648,7 +712,8 @@ void affiche_game(board game)
 	// affichage du plateau est des piece restante
 	for (int ligne = 0; ligne < 16; ligne++)
 	{
-		
+		// decale l'affichage sur la droite
+		printf("    ");
 		for (int colonne = 0; colonne < 40; colonne++)
 		{
 			// affichage du tableau sur la gauche
@@ -659,9 +724,9 @@ void affiche_game(board game)
 			else 
 			{
 				// affiche d'est piece sur la droite
-				if (colonne > 19)
+				if (colonne > 24 && colonne < 31)
 				{
-					print_all_piece(ligne, colonne);
+					print_all_piece(game, ligne, colonne);
 				}
 				else
 				{
@@ -675,7 +740,7 @@ void affiche_game(board game)
 	printf("\n");
 }
 
-
+// fonction permettent de sauvegarder une partie dans un fichier
 void serialise_save(save game_save)
 {
 	
@@ -727,7 +792,7 @@ void serialise_save(save game_save)
 
 }
 
-
+// fonction permettent de charger une partie depuis un fichier
 void load_save(save game_save)
 {
 	
@@ -803,6 +868,8 @@ void load_save(save game_save)
 }
 
 
+
+///    AI     ///
 
 
 

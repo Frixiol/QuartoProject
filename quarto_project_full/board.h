@@ -48,12 +48,21 @@ typedef struct board_t* board;
 
 typedef struct piece_t* piece;
 
+// A METTRE DANS SAVE POUR CONNAITRE L'ACTION EN COURS 
+enum action{
+	
+         CHOOSING_PIECE,
+         CHOOSING_POSITION
+
+};
 
 struct save_t {
 	
 	board game;
 	int joueur_tour;
 	char joueur_name[2][10];
+	enum action g_action;
+	// nb de tours pour la save condition de win
 };
 
 
@@ -84,6 +93,8 @@ void ask_name(save game_save, int joueur);
 
 int ask_number_between(int low_value, int high_value, int number);
 
+
+int ask_to_quit();
 
 
 void affichage_menu();

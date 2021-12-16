@@ -16,11 +16,13 @@ enum state {
 	QUIT
 };
 
+// variable de selection de page
 enum state launcher;
 
+// variable coontenant les donné de la partie
 save game_save;
 
-
+// fonction menu permettent de se deplacer dans les option du programme
 void menu()
 {
 	int menu_choice = 0;
@@ -28,48 +30,52 @@ void menu()
 	system("clear");
 	affichage_menu();
 	
+	// demande de choisir 
 	menu_choice = ask_number_between(1, 5, menu_choice);
 	
-	
-	if (menu_choice == 1)
+	switch (menu_choice)
 	{
-		launcher = NGAM;
-		game_save = new_save();
-	}
 	
-	if (menu_choice == 2)
-	{
-		launcher = LGAM;
-		game_save = new_save();
-	}
+		case 1:
+			launcher = NGAM;
+			game_save = new_save();
+			break;
+			
+		case 2:
+			launcher = LGAM;
+			game_save = new_save();
+			break;
+			
+		case 3:
+			launcher = HALL;
+			break;
+			
+		case 4:
+			launcher = CMTJ;
+			break;
+			
+		case 5:
+			launcher = QUIT;
+			break;
+		
+		default:
+			launcher = QUIT;
 	
-	if (menu_choice == 3)
-	{
-		launcher = HALL;
-	}
-	
-	if (menu_choice == 4)
-	{
-		launcher = CMTJ;
-	}
-	
-	if (menu_choice == 5)
-	{
-		launcher = QUIT;
 	}
 	
 }
 
 
-
-
+// fonction de jeu
 void game()
 {
 		
 	system("clear");
 	affiche_game(game_save->game);
 	
-    while (!(has_winner(game_save->game)))
+	int tour = 0;
+	
+    while (!(has_winner(game_save->game)) && tour < 16)
     {
 		
 		piece a_piece = ask_choose_piece(game_save);
@@ -83,6 +89,8 @@ void game()
 		game_save->joueur_tour = (game_save->joueur_tour + 1) % 2;
 		
 		ask_choose_emplacement(game_save, a_piece);
+		
+		tour++;
 	
 		system("clear");
 		affiche_game(game_save->game);
@@ -104,6 +112,8 @@ void game()
 	launcher = MENU;
 }
 
+
+// fonction permettent de lancer une nouvelle partie
 void launch_game()
 {
 	
@@ -122,6 +132,7 @@ void launch_game()
 	
 }
 
+// fonction permettent de charger et lancer une partie depuis un fichier
 void load_game()
 {
 	
@@ -132,22 +143,21 @@ void load_game()
 	
 }
 
+// fonction permettent d'afficher les score des joueurs
 void hall_of_fame()
 {
 	system("clear");
+	
 	affichage_titre();
 	
 	hall_read("hall_of_fame.txt");
     
-    // moyen de quitter le hall a CHANGER !!!
-    int a;
-	printf("entrer un nombre pour quitter:");
-	scanf("%d", &a);
+    ask_to_quit();
 	
 	launcher = MENU;
 }
 
-
+// fonction permettent d'afficher les instruction du jeu
 void how_to_play()
 {
 	system("clear");
@@ -155,10 +165,7 @@ void how_to_play()
 	
 	hall_read("how_to_play.txt");
     
-    // moyen de quitter le hall a CHANGER !!!
-    int a;
-	printf("entrer un nombre pour quitter:");
-	scanf("%d", &a);
+    ask_to_quit();
 	
 	launcher = MENU;
 }
@@ -166,11 +173,17 @@ void how_to_play()
 
 int main(int argc, char **argv)
 {
+	// variable bool de la boucle principale
 	bool run = true;
+	
+	// mene principale lancer 
 	launcher = MENU;
 	
+	// boucle principale du programme
 	while (run)
 	{
+		printf("a\n");
+		
 		if (launcher == MENU) menu();
 		
 		else if (launcher == NGAM) launch_game();
@@ -183,6 +196,8 @@ int main(int argc, char **argv)
 		
 		else if (launcher == QUIT) run = false;
 	}
+	
+	system("clear");
 	return 0;
 }
 

@@ -4,8 +4,8 @@
 ----------------------------------------
 nombre de partie gagnee par joueur
 
-alan: 8 victoire
-melo: 4 victoire
+alan: 7 victoire
+melo: 7 victoire
 marco: 1 victoire
 polo: 1 victoire
 0000: 1 victoire

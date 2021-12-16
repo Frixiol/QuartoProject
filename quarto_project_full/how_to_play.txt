@@ -3,4 +3,5 @@
             COMMENT JOUER
 ----------------------------------------
 
-c'est très simple
+c'est très simple de jouer a quarto !
+
