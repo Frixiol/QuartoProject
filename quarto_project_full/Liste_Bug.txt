@@ -1,0 +1,32 @@
+
+
+Bug Trouvé:
+
+
+/////
+
+-Q- la fonction QUIT bloque après l'exact ouverte du hall of fame puis du comment jouer
+
+-A- inconnue
+
+/////
+
+
+
+/////
+
+-Q- A certain moment l'IA joue deux fois d'afiller après avoir choisi une piece
+
+-A- probablement un problème du minimax qui effectue des changement sans les remettre ensuite
+
+/////
+
+
+
+/////
+
+-Q- Le Hall of fame ne dépasse pas 10...
+
+-A- ne check que 1 valeur dans la fonction serialize_save
+
+/////

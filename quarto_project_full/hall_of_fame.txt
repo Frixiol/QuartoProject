@@ -1,0 +1,18 @@
+
+----------------------------------------
+              HALL OF FAME
+----------------------------------------
+nombre de partie gagnee par joueur
+
+alan: 6 victoire
+melo: 6 victoire
+marco: 1 victoire
+polo: 1 victoire
+0000: 1 victoire
+aa: 3 victoire
+a: 2 victoire
+ml: 1 victoire
+m: 1 victoire
+: 6 victoire
+al: 3 victoire
+fri: 1 victoire
